@@ -1,5 +1,5 @@
 {
-  "name": "week-24-cicd-turborepo",
+  "name": "week-25-cicd-turborepo",
   "private": true,
   "scripts": {
     "build": "turbo run build",
