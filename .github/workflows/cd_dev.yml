@@ -16,6 +16,12 @@ jobs:
           chmod 600 private_key.pem
 
           ssh -o StrictHostKeyChecking=no -i private_key.pem ubuntu@43.205.129.39 << 'EOF'
+
+            # Load NVM + correct Node version
+            export NVM_DIR="$HOME/.nvm"
+            source "$NVM_DIR/nvm.sh"
+            nvm use 22
+
             cd ~/ci-cd-turborepo
 
             git pull origin main
@@ -27,7 +33,9 @@ jobs:
             npx prisma migrate deploy
             cd ../..
 
-            pnpm run build
+            # Stop deployment if build fails
+            pnpm run build || exit 1
 
             pm2 restart all
+
           EOF
