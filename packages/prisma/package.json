@@ -3,23 +3,30 @@
   "name": "@repo/db",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
-  "exports": {
-    "./client": "./lib/prisma.ts"
+  "main": "dist/src/index.js",
+  "scripts": {
+    "build": "tsc -b",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev",
+    "db:deploy": "prisma migrate deploy"
   },
   "keywords": [],
-  "author": "", 
+  "author": "",
+  "license": "ISC",
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
-    "@types/node": "^22.15.3",
-    "tsx": "^4.21.0",
-    "typescript": "^6.0.2"
+    "prisma": "^7.6.0",
+    "typescript": "^5.0.0"
   },
-  "license": "ISC",
   "dependencies": {
     "@prisma/adapter-neon": "^7.6.0",
     "@prisma/client": "^7.6.0",
-    "dotenv": "^17.4.0",
-    "prisma": "^7.6.0"
+    "dotenv": "^17.4.0"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/src/index.js",
+      "types": "./dist/src/index.d.ts"
+    }
   }
 }
