@@ -339,3 +339,112 @@ pnpm --filter @repo/db db:generate  # regenerate prisma client
 | `ERR_MODULE_NOT_FOUND` for `./client` | Missing `.js` extension in imports      | All relative imports need `.js` with `NodeNext` resolution     |
 | Types from `@repo/db` not working     | `declaration: true` missing in tsconfig | Ensure `packages/prisma/tsconfig.json` has `declaration: true` |
 | Prisma client not found               | `prisma generate` not run               | Run `pnpm --filter @repo/db db:generate`                       |
+
+
+
+////nginx
+write in ( sudo /etc/nginx/nginx.conf ) of production
+
+
+events {
+    # Event directives...
+}
+
+http {
+	server {
+    listen 80;
+    server_name ws.pratik.codes;
+
+    location / {
+        proxy_pass http://localhost:3001;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+	}
+
+	server {
+    listen 80;
+    server_name http.pratik.codes;
+
+    location / {
+        proxy_pass http://localhost:3002;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+	}
+
+	server {
+    listen 80;
+    server_name fe.pratik.codes;
+
+    location / {
+        proxy_pass http://localhost:3000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+	}
+}
+
+
+// ---------------------------------------------------------------------------
+
+////nginx
+write in ( sudo /etc/nginx/nginx.conf ) of dev
+
+
+events {
+    # Event directives...
+}
+
+http {
+	server {
+    listen 80;
+    server_name dev.ws.pratik.codes;
+
+    location / {
+        proxy_pass http://localhost:3001;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+	}
+
+	server {
+    listen 80;
+    server_name dev.http.pratik.codes;
+
+    location / {
+        proxy_pass http://localhost:3002;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+	}
+
+	server {
+    listen 80;
+    server_name dev.fe.pratik.codes;
+
+    location / {
+        proxy_pass http://localhost:3000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+	}
+}
