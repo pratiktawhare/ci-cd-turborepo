@@ -1,0 +1,20 @@
+name: Deploy to dev/staging
+on:
+  push:
+    branches:
+      - "main"
+
+jobs:
+  redeploy_everything:
+    name: Redeploy everything to the stagingn cluster
+    runs-on: ubuntu-latest
+    steps:
+      - name: SSH into server
+      - run: |
+          echo ${{secrets.SSH_PRIVATE_KEY}} &> private_key.pem
+          ssh -i ~/private_key.pem root@43.205.129.39
+          cd ci-cd-turborepo
+          git pull origin main
+          pnpm install
+          pnpm run build
+          pm2 restart all
