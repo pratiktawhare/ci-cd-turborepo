@@ -10,6 +10,8 @@ export default async function Home() {
           <p>user - {user?.username} password - {user?.password}</p>
         </div>
       ))}
+
+      <h1>Welcome to Next.js!</h1>
     </div>
   );
 }

@@ -1,0 +1,39 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches:
+      - "production"
+
+jobs:
+  redeploy_prod:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to Production Server
+        run: |
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > private_key.pem
+          chmod 600 private_key.pem
+
+          ssh -o StrictHostKeyChecking=no -i private_key.pem ubuntu@52.66.198.85 << 'EOF'
+
+            export NVM_DIR="$HOME/.nvm"
+            source "$NVM_DIR/nvm.sh"
+            nvm use 22
+
+            cd ~/ci-cd-turborepo
+
+            git pull origin production
+
+            pnpm install --frozen-lockfile
+
+            cd packages/prisma
+            npx prisma generate
+            npx prisma migrate deploy
+            cd ../..
+
+            pnpm run build || exit 1
+
+            pm2 restart all
+
+          EOF

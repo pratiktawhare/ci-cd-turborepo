@@ -1,0 +1,41 @@
+name: Deploy to dev/staging
+
+on:
+  push:
+    branches:
+      - "main"
+
+jobs:
+  redeploy_everything:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy via SSH
+        run: |
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > private_key.pem
+          chmod 600 private_key.pem
+
+          ssh -o StrictHostKeyChecking=no -i private_key.pem ubuntu@43.205.129.39 << 'EOF'
+
+            # Load NVM + correct Node version
+            export NVM_DIR="$HOME/.nvm"
+            source "$NVM_DIR/nvm.sh"
+            nvm use 22
+
+            cd ~/ci-cd-turborepo
+
+            git pull origin main
+
+            pnpm install
+
+            cd packages/prisma
+            npx prisma generate
+            npx prisma migrate deploy
+            cd ../..
+
+            # Stop deployment if build fails
+            pnpm run build || exit 1
+
+            pm2 restart all
+
+          EOF
