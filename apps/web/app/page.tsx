@@ -12,6 +12,7 @@ export default async function Home() {
       ))}
 
       <h1>Welcome to Next.js!</h1>
+      <h1>Hello Aary and Sharvil</h1>
     </div>
   );
 }
